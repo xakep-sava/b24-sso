@@ -1,93 +1,88 @@
 import * as React from 'react'
-import { Field, Form, Formik } from 'formik'
+import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
-import SVG from 'react-inlinesvg'
 import ReactTooltip from 'react-tooltip'
-import jwt from 'jsonwebtoken'
+import jwt, { VerifyErrors } from 'jsonwebtoken'
+import PropTypes from 'prop-types'
+import 'normalize.css'
+import { useTranslation } from 'react-i18next'
 
-import { IProps, IState } from '../../interfaces'
 import API from '../../helpers/API'
-import styles from '../../assets/styles'
+import RenderInputs from '../../components/RenderInputs'
+import Header from '../../components/Header'
+import { IProps } from '../../interfaces'
 
-import logo from '../../assets/images/logo.svg'
+import useStyles from '../../assets/styles'
 
-export default class Login extends React.PureComponent<IProps, IState> {
-  public static defaultProps = {
-    schema: Yup.object().shape({
-      email: Yup.string()
-        .email('Invalid email')
-        .required('Required'),
-      password: Yup.string()
-        .min(5, 'Too short - should be 5 chars minimum!')
-        .required('Required')
-    }),
-    fields: [{ name: 'email', type: 'email' }, { name: 'password' }]
-  }
+const Login = (props: IProps) => {
+  const { schema, fields } = props
+  const classes = useStyles()
+  const { t } = useTranslation()
 
-  public render() {
-    const { schema, fields } = this.props
-    return (
-      <div style={styles.container}>
-        <Formik
-          initialValues={{ email: 'admin@b24online.com', password: 'admin' }}
-          validationSchema={schema}
-          onSubmit={this.onSubmit}
-        >
-          {({ errors, touched }) => (
-            <Form style={styles.form}>
-              <div style={styles.wrap}>
-                <SVG src={logo} style={styles.logo} />
-                <h1 style={styles.title}>Sign In with your account</h1>
+  return (
+    <div className={classes.container}>
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={schema}
+        onSubmit={values => onSubmit(values, props)}
+      >
+        {({ errors, touched }) => (
+          <Form className={classes.form}>
+            <div className={classes.wrap}>
+              <Header title="Sign In with your account" />
+              <RenderInputs errors={errors} touched={touched} fields={fields} />
 
-                {fields?.map((field, i) => (
-                  <Field
-                    key={i}
-                    data-tip={errors[field.name] ?? ''}
-                    name={field.name}
-                    type={field.type || 'text'}
-                    title={field.title || field.name}
-                    id={field.id || field.name}
-                    placeholder={field.placeholder || field.name}
-                    autoComplete={field.autoComplete || 'on'}
-                    autoFocus={field.autoFocus || i === 0}
-                    className={['input_', touched[field.name] ? (errors[field.name] ? 'error' : 'valid') : ''].join('')}
-                  />
-                ))}
-                <div>
-                  <button style={styles.button} type="submit">
-                    Sign in
-                  </button>
-                  <a href="/forgot">Forgot password?</a>
-                </div>
-
-                <p>
-                  Don’t have an account? <a href="/register">Register now!</a>
-                </p>
+              <div className={classes.bottomToolbar}>
+                <button type="submit">{t('Sign in')}</button>
+                <a href="/forgot">{t('Forgot password?')}</a>
               </div>
-            </Form>
-          )}
-        </Formik>
-        <ReactTooltip type="error" effect="solid" place="right" />
-      </div>
-    )
-  }
 
-  onSubmit = (values: object) => {
-    const { onLoad, jwtKey } = this.props
-
-    API.post(
-      'auth/jwt/create/',
-      values,
-      (data: any) => {
-        if (data.access) {
-          jwt.verify(data.access, jwtKey, (error: object, user: object) => {
-            if (onLoad) {
-              onLoad(data, user, error)
-            }
-          })
-        }
-      },
-      () => {}
-    )
-  }
+              <p>
+                {t('Don’t have an account?')} <a href="/register">{t('Register now!')}</a>
+              </p>
+            </div>
+          </Form>
+        )}
+      </Formik>
+      <ReactTooltip type="error" effect="solid" place="right" />
+    </div>
+  )
 }
+
+const onSubmit = (values: object, props: IProps) => {
+  const { onLoad, jwtKey } = props
+
+  API.post(
+    'auth/jwt/create/',
+    values,
+    (data: any) => {
+      if (data.access) {
+        jwt.verify(data.access, jwtKey, (error: VerifyErrors | null, user: object | undefined) => {
+          if (onLoad) {
+            onLoad(data, user, error)
+          }
+        })
+      }
+    },
+    null
+  )
+}
+
+Login.propTypes = {
+  jwtKey: PropTypes.string.isRequired,
+  schema: PropTypes.object,
+  fields: PropTypes.array
+}
+
+Login.defaultProps = {
+  schema: Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string().min(5, 'Too short - should be 5 chars minimum!').required('Required')
+  }),
+  fields: [
+    { name: 'email', type: 'email', title: 'Email', placeholder: 'Email', autoComplete: 'on' },
+    { name: 'password', type: 'password', title: 'Password', placeholder: 'Password' }
+  ]
+}
+
+export default Login

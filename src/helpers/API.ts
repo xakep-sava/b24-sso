@@ -1,48 +1,19 @@
 const API_URL = 'http://sso.stage.b24online.com/api/'
 
-const get = (
-  url: string,
-  action: string,
-  beforeSendCallback = () => {},
-  successCallback = (data: object) => {},
-  errorCallback = (error: object) => {},
-  finishCallback = () => {}
-) => {
-  fetch(`${API_URL}${action}`)
-    .then(response => response.json())
-    .then(data => {
-      // successCallback(response.data)
-
-      // errorCallback(error)
-      console.log(data)
-    })
-    .catch(error => {
-      console.log(error)
-
-      // errorCallback(error)
-    })
-
-  // finishCallback
+const get = (url: string, action: string) => {
+  fetch(`${API_URL}${action}`).then(response => response.json())
 }
 
-const post = (
-  action: string,
-  data: object,
-  // beforeSendCallback = () => {},
-  successCallback = (data: object) => {},
-  errorCallback = (error: object) => {}
-  // finishCallback = () => {}
-) => {
+const post = (action: string, data: object, successCallback: any, errorCallback: any) => {
   fetch(`${API_URL}${action}`, {
     method: 'POST',
     headers: getHeaders(),
-    // credentials: 'include',
     body: JSON.stringify(data)
   })
     .then(response => response.json())
-    .then(data => {
+    .then(response => {
       if (successCallback) {
-        successCallback(data)
+        successCallback(response)
       }
     })
     .catch(error => {
@@ -53,7 +24,7 @@ const post = (
 }
 
 const getHeaders = () => {
-  let headers = new Headers()
+  const headers = new Headers()
   headers.append('Content-Type', 'application/json')
   headers.append('Charset', 'utf8')
 

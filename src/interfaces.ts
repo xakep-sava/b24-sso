@@ -1,12 +1,12 @@
+import { VerifyErrors } from 'jsonwebtoken'
+
 export interface IProps {
   jwtKey: string
   onError?: (error: Error | IFetchError) => void
-  onLoad?: (data: object, message: object, error: object) => void,
-  schema?: object,
-  fields?: Array<IField>,
+  onLoad?: (data: object, message: object | undefined, error: VerifyErrors | null) => void
+  schema?: object
+  fields?: Array<IField>
 }
-
-export interface IState {}
 
 export interface IFetchError extends Error {
   code: string
@@ -24,9 +24,3 @@ export interface IField {
   autoComplete?: string
   autoFocus?: boolean
 }
-
-// export interface IStorageItem {
-//   content: string
-//   queue: any[]
-//   status: string
-// }

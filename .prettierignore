@@ -1,3 +1,12 @@
-coverage
-lib
-node_modules
+*.*
+!*.css
+!*.js
+!*.json
+!*.jsx
+!*.less
+!*.md
+!*.mdx
+!*.ts
+!*.tsx
+!*.yml
+integrations
