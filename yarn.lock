@@ -1451,6 +1451,11 @@ find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
+fingerprintjs2@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fingerprintjs2/-/fingerprintjs2-2.1.0.tgz#21dc3fee27d3b199056ef8eb873debccd8e06323"
+  integrity sha512-H1k/ESTD2rJ3liupyqWBPjZC+LKfCGixQzz/NDN4dkgbmG1bVFyMOh7luKSkVDoyfhgvRm62pviNMPI+eJTZcQ==
+
 fn-name@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/fn-name/-/fn-name-3.0.0.tgz#0596707f635929634d791f452309ab41558e3c5c"

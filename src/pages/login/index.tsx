@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import ReactTooltip from 'react-tooltip'
-import jwt, { VerifyErrors } from 'jsonwebtoken'
 import PropTypes from 'prop-types'
 import 'normalize.css'
 import { useTranslation } from 'react-i18next'
@@ -24,13 +23,13 @@ const Login = (props: IProps) => {
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={schema}
-        onSubmit={values => onSubmit(values, props)}
+        onSubmit={values => onSubmit(values)}
       >
         {({ errors, touched }) => (
           <Form className={classes.form}>
             <div className={classes.wrap}>
-              <Header title="Sign In with your account" />
-              <RenderInputs errors={errors} touched={touched} fields={fields} />
+              <Header title="Sign In with your account"/>
+              <RenderInputs errors={errors} touched={touched} fields={fields}/>
 
               <div className={classes.bottomToolbar}>
                 <button type="submit">{t('Sign in')}</button>
@@ -44,24 +43,18 @@ const Login = (props: IProps) => {
           </Form>
         )}
       </Formik>
-      <ReactTooltip type="error" effect="solid" place="right" />
+      <ReactTooltip type="error" effect="solid" place="right"/>
     </div>
   )
 }
 
-const onSubmit = (values: object, props: IProps) => {
-  const { onLoad, jwtKey } = props
-
-  API.post(
-    'auth/jwt/create/',
-    values,
-    (data: any) => {
-      if (data.access) {
-        jwt.verify(data.access, jwtKey, (error: VerifyErrors | null, user: object | undefined) => {
-          if (onLoad) {
-            onLoad(data, user, error)
-          }
-        })
+const onSubmit = (values: object) => {
+  API.post('user', values,
+    (response: any) => {
+      if (response.access) {
+        // if (onLoad) {
+        //   onLoad(response, user, error)
+        // }
       }
     },
     null

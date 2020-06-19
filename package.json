@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
+    "fingerprintjs2": "^2.1.0",
     "formik": "^2.1.4",
     "i18next": "^19.4.3",
     "i18next-browser-languagedetector": "^4.1.1",

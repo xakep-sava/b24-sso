@@ -1,4 +1,4 @@
-const API_URL = 'http://sso.stage.b24online.com/api/'
+const API_URL = 'http://localhost:3070/api/v1/'
 
 const get = (url: string, action: string) => {
   fetch(`${API_URL}${action}`).then(response => response.json())

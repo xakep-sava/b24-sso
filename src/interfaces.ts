@@ -8,6 +8,10 @@ export interface IProps {
   fields?: Array<IField>
 }
 
+export interface IActivationProps {
+  match: any
+}
+
 export interface IFetchError extends Error {
   code: string
   errno: string
